@@ -41,7 +41,7 @@ Game cycle:
 
 ## Video
 
-- [V03 on youtu.be/-h-vpe_XNrg](https://youtu.be/-h-vpe_XNrg)
+- [![PLAY VIDEOhttps://i.imgur.com/kYBX15O.png](https://i.imgur.com/kYBX15O.png)](https://youtu.be/-h-vpe_XNrg)
 
 Old versions:
 
