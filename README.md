@@ -45,8 +45,9 @@ Game cycle:
 
 ## Screenshots
 
-![screen 1](https://i.imgur.com/BF9w8hC.png)
-![screen 2](https://i.imgur.com/LnS3qGW.png)
+![screen 1](https://i.imgur.com/s4GUa6z.png)
+![screen 2](https://i.imgur.com/DmKsFtD.png)
+![screen 3](https://i.imgur.com/gGCgXIy.png)
 
 ## Video
 
