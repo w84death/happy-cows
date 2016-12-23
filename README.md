@@ -30,18 +30,6 @@ Game cycle:
 - [DEL] for restarting
 - 2x[ESC] for exit
 
-# Tech 
-
-## ASCII
-
-
-[![ASCII in FreeBASIC](https://i.imgur.com/KzaVfkB.png)](http://lampiweb.com/help/freebasic/CptAscii.html)
-
-## CGArne Palette
-
-
-[![CGArne pallette in FreeBASIC](https://i.imgur.com/cDWLfxO.png)](http://androidarts.com/palette/16pal.htm)
-
 
 ## Screenshots
 
@@ -57,3 +45,15 @@ Old versions:
 
 - [VER0.1 on youtu.be/WZxoY20Vt_4](https://youtu.be/WZxoY20Vt_4)
 - [VER0.1 (ZOOM) on youtu.be/REHijw4HSew](https://youtu.be/REHijw4HSew)
+
+# Tech 
+
+## ASCII
+
+[![ASCII in FreeBASIC](https://i.imgur.com/KzaVfkB.png)](http://lampiweb.com/help/freebasic/CptAscii.html)
+
+## CGArne Palette
+
+[![CGArne pallette in FreeBASIC](https://i.imgur.com/cDWLfxO.png)](http://androidarts.com/palette/16pal.htm)
+
+
