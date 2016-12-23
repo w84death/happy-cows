@@ -5,7 +5,7 @@
 ''	(c) 2016 P1X
 ''
 
-screenres 640, 480, 8, 2
+screenres 900, 600, 8, 4
 
 '' CGArne COLOR PALETTE
 palette 0, 0,0,0
@@ -47,7 +47,7 @@ dim as boolean game_over = 0
 dim as string key
 dim as integer i, x, y, t, no = 0, frames = 0
 dim as integer new_pos_x, new_pos_y, length
-dim as integer lake_x, lake_y
+dim as integer lake_x, lake_y, lake_size
 dim as integer max_forest = 1 + rnd*3
 dim as integer starting_forest(4, 2),starting_forest_id
 dim as integer grass_max, grass_hp
@@ -58,6 +58,7 @@ grass_max = 0
 grass_hp = 0
 cows_hunger = 5
 cows_movement = 25
+lake_size = 28
 lake_x = max_x / 2
 lake_y = max_y / 2
 max_forest = 1 + rnd*3
@@ -113,7 +114,7 @@ for x = 0 to max_x
 		lake_y = lake_y + (1 - rnd*2)
 	end if
 	length = sqr((lake_x-x)^2 + (lake_y-y)^2)
-	if  ( length < 12 ) or ( length < 13 and rnd*10 < 3 ) then
+	if  ( length < lake_size - 1 ) or ( length < lake_size and rnd*10 < 3 ) then
 		no_go(x, y, 0) = ascii_water(rnd*3)
 		no_go(x, y, 1) = 11
 		no_go(x, y, 2) = 3

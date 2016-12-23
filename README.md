@@ -1,6 +1,18 @@
 # happy-cows
 Simple game about making cows happy. True ASCII + CGArne palette. FreeBASIC.
 
+Procedural terrain generator:
+
+- lake
+- forest groups
+
+Game cycle:
+
+- sheeps are eating grass grass
+- grass re-grow
+- completely eaten grass do not re-grow
+
+
 # Downloads & Run
 
 - download binary for [linux64](https://github.com/w84death/happy-cows/raw/master/happy-cows)
