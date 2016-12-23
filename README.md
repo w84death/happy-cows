@@ -1,6 +1,8 @@
 # happy-cows
 Simple game about making cows happy. True ASCII + CGArne palette. FreeBASIC.
 
+![Happy Cows](https://i.imgur.com/BQGKxeU.png)
+
 Procedural terrain generator:
 
 - lake
