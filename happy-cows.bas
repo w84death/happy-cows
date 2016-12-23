@@ -48,6 +48,8 @@ dim as string key
 dim as integer i, x, y, t, no = 0, frames = 0
 dim as integer new_pos_x, new_pos_y, length
 dim as integer lake_x = max_x / 2, lake_y = max_y / 2
+dim as integer max_forest = rnd*14
+dim as integer starting_forest(max_forest, 2), starting_forest_id = 0
 
 '' GENERATE COWS
 for i = 0 to cow_max
@@ -55,6 +57,21 @@ for i = 0 to cow_max
 	cow(i, 1) = 12 + rnd*8
 	cow(i, 2) = rnd*5
 next
+
+'' GENERATE FOREST
+for i = 0 to max_forest
+	x = rnd*max_x
+	y = rnd*max_y
+	no_go(x, y, 0) = ascii_forest(rnd*4)
+	no_go(x, y, 1) = palette_forest(rnd*2)
+	no_go(x, y, 2) = 10
+	no_go(x, y, 3) = 0
+	starting_forest(starting_forest_id, 0) = x
+	starting_forest(starting_forest_id, 1) = y
+	starting_forest_id = starting_forest_id + 1
+next
+
+
 
 '' GENERATE TERRAIN
 for y = 0 to max_y
@@ -68,15 +85,18 @@ for x = 0 to max_x
 	no_go(x, y, 3) = -1
 	
 	'' FOREST
-	if rnd*100 < 1 then
-		no_go(x, y, 0) = ascii_forest(rnd*4)
-		no_go(x, y, 1) = palette_forest(rnd*2)
-		no_go(x, y, 2) = 10
-		no_go(x, y, 3) = 0
-	end if
+	for i = 0 to max_forest
+		length = sqr((starting_forest(i, 0)-x)^2 + (starting_forest(i, 1)-y)^2)
+		if length < rnd*6 and rnd*10<4 then
+			no_go(x, y, 0) = ascii_forest(rnd*4)
+			no_go(x, y, 1) = palette_forest(rnd*2)
+			no_go(x, y, 2) = 10
+			no_go(x, y, 3) = 0
+		end if
+	next
 
 	'' LAKES
-	if rnd*100 < 3 then
+	if rnd*100 < 5 then
 		lake_x = lake_x + (1 - rnd*2)
 		lake_y = lake_y + (1 - rnd*2)
 	end if
