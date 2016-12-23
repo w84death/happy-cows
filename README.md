@@ -50,5 +50,9 @@ Game cycle:
 
 ## Video
 
+- [V03 on youtu.be/-h-vpe_XNrg](https://youtu.be/-h-vpe_XNrg)
+
+Old versions:
+
 - [VER0.1 on youtu.be/WZxoY20Vt_4](https://youtu.be/WZxoY20Vt_4)
 - [VER0.1 (ZOOM) on youtu.be/REHijw4HSew](https://youtu.be/REHijw4HSew)
