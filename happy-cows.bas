@@ -1,6 +1,6 @@
 ''
 ''	KRZYSZTOF JANKOWSKI
-''	HAPPY COWS V0.1
+''	HAPPY COWS V0.2
 ''
 ''	(c) 2016 P1X
 ''
@@ -35,8 +35,8 @@ dim palette_grass(4) as integer  => {10,2}
 dim palette_forest(3) as integer  => {0, 5, 4}
 dim palette_cow(6) as integer  => {15, 15, 15, 15, 7, 7}
 
-dim as integer cow_max = 16
-dim as integer cow(cow_max, 3)
+dim as integer max_cows = 32
+dim as integer cow(max_cows, 3)
 
 dim as integer max_x = LoWord(width)
 dim as integer max_y = HiWord(width)
@@ -47,12 +47,18 @@ dim as boolean game_over = 0
 dim as string key
 dim as integer i, x, y, t, no = 0, frames = 0
 dim as integer new_pos_x, new_pos_y, length
-dim as integer lake_x = max_x / 2, lake_y = max_y / 2
-dim as integer max_forest = rnd*14
-dim as integer starting_forest(max_forest, 2), starting_forest_id = 0
+dim as integer lake_x, lake_y
+dim as integer max_forest = 1 + rnd*3
+dim as integer starting_forest(4, 2),starting_forest_id
+
+do
+lake_x = max_x / 2
+lake_y = max_y / 2
+max_forest = 1 + rnd*3
+starting_forest_id = 0
 
 '' GENERATE COWS
-for i = 0 to cow_max
+for i = 0 to max_cows
 	cow(i, 0) = 12 + rnd*8
 	cow(i, 1) = 12 + rnd*8
 	cow(i, 2) = rnd*5
@@ -87,7 +93,7 @@ for x = 0 to max_x
 	'' FOREST
 	for i = 0 to max_forest
 		length = sqr((starting_forest(i, 0)-x)^2 + (starting_forest(i, 1)-y)^2)
-		if length < rnd*6 and rnd*10<4 then
+		if length < 2 + rnd*12 and rnd*10<7 then
 			no_go(x, y, 0) = ascii_forest(rnd*4)
 			no_go(x, y, 1) = palette_forest(rnd*2)
 			no_go(x, y, 2) = 10
@@ -146,14 +152,14 @@ next
 next
  
 '' RENDER COW
-for i = 0 to cow_max
+for i = 0 to max_cows
 	locate cow(i,1), cow(i,0)
 	color palette_cow(cow(i, 2)), palette_grass(1)
 	print chr(64);
 next
 
 '' AI
-for i = 0 to cow_max
+for i = 0 to max_cows
 	if rnd*100 < 5 then
 		new_pos_x = cow(i, 0) - 1 + rnd*2
 		if new_pos_x < max_x and new_pos_x > 0 and no_go(new_pos_x, cow(i, 1), 0) < 0 then
@@ -177,11 +183,14 @@ next
 
 '' HUD
 locate 2, 2
-color 14, 13
-print "DAY ";
-print no;
-locate 2, max_x - 10
-print "HAPPY COWS"
+	color 14, 13
+	print "DAY ";
+	print no;
+locate 2, 16
+	print "COWS ";
+	print max_cows;
+locate 2, max_x - 15
+	print "HAPPY COWS V0.2"
 
 '' CLOCKS
 frames = frames + 1
@@ -191,8 +200,11 @@ if frames > 24*60 then
 end if
 ScreenUnlock()
 
-Sleep(18, 1)
-Loop Until key = Chr(27) Or key = Chr(255, 107)
+sleep(18, 1)
 
+'' DELETE
+loop until key = chr(255, 83) or key = chr(27)
+'' ESC
+loop until key = chr(27)
 
 sleep
