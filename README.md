@@ -12,6 +12,12 @@ Simple game about making cows happy. True ASCII + CGArne palette. FreeBASIC.
 
 - run: fbc happy-cows.bas
 
+
+# Keys
+
+- [DEL] for restarting
+- 2x[ESC] for exit
+
 # Tech 
 
 ## ASCII
