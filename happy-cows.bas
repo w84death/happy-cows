@@ -1,6 +1,6 @@
 ''
 ''	KRZYSZTOF JANKOWSKI
-''	HAPPY COWS V0.2
+''	HAPPY COWS V03
 ''
 ''	(c) 2016 P1X
 ''
@@ -50,8 +50,14 @@ dim as integer new_pos_x, new_pos_y, length
 dim as integer lake_x, lake_y
 dim as integer max_forest = 1 + rnd*3
 dim as integer starting_forest(4, 2),starting_forest_id
+dim as integer grass_max, grass_hp
+dim as integer cows_movement, cows_hunger
 
 do
+grass_max = 0
+grass_hp = 0
+cows_hunger = 5
+cows_movement = 25
 lake_x = max_x / 2
 lake_y = max_y / 2
 max_forest = 1 + rnd*3
@@ -113,6 +119,11 @@ for x = 0 to max_x
 		no_go(x, y, 2) = 3
 		no_go(x, y, 3) = 1
 	end if
+
+	'' COUNT GRASS
+	if terrain(x, y) > 0 and no_go(x, y, 0) < 0 then
+		grass_max = grass_max + 1
+	end if
 next
 next
 
@@ -124,6 +135,7 @@ do
 key = Inkey()
 
 ScreenLock()
+grass_hp = 0
 
 '' RENDER TERRAIN (ANIMATE WATER)
 for y = 0 to max_y
@@ -141,12 +153,17 @@ for x = 0 to max_x
 		color palette_grass(0), palette_grass(1)
 		
 		'' GRASS GROWING
-		if (  terrain(x, y) < 4 and terrain(x,y) > 0 and rnd*2000<1 ) or ( terrain(x, y) < 1 and rnd*3000<1 ) then
+		if terrain(x, y) > 0 and terrain(x,y) < 4 and rnd*2000<1 then
 			terrain(x, y) = terrain(x, y) + 1
 		end if
 
 		'' RENDER TERRAIN
 		print chr(ascii_terrain(terrain(x, y)));
+		
+		'' COUNT GRASS HP
+		if terrain(x, y) > 0 then
+			grass_hp = grass_hp + 1
+		end if
 	end if
 next
 next
@@ -160,20 +177,20 @@ next
 
 '' AI
 for i = 0 to max_cows
-	if rnd*100 < 5 then
+	if rnd*100 < cows_movement then
 		new_pos_x = cow(i, 0) - 1 + rnd*2
 		if new_pos_x < max_x and new_pos_x > 0 and no_go(new_pos_x, cow(i, 1), 0) < 0 then
 			cow(i, 0) = new_pos_x
 		end if
 	end if
-	if rnd*100 < 5 then
+	if rnd*100 < cows_movement then
 		new_pos_y = cow(i, 1) - 1 + rnd*2
 		if new_pos_y < max_y and new_pos_y > 0 and no_go(cow(i, 0), new_pos_y, 0) < 0  then
 			cow(i, 1) = new_pos_y
 		end if
 	end if
 
-	if rnd*100 < 10 then
+	if rnd*100 < cows_hunger then
 		t = terrain(cow(i, 0), cow(i, 1))
 		if t > 0 then
 			terrain(cow(i, 0), cow(i, 1)) = t - 1
@@ -189,8 +206,13 @@ locate 2, 2
 locate 2, 16
 	print "COWS ";
 	print max_cows;
-locate 2, max_x - 15
-	print "HAPPY COWS V0.2"
+locate 2, 32
+	print "GRASS HP ";
+	print grass_hp;
+	print "/";
+	print grass_max
+locate 2, max_x - 14
+	print "HAPPY COWS V03"
 
 '' CLOCKS
 frames = frames + 1
