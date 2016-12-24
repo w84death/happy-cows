@@ -1,11 +1,11 @@
 ''
 ''	KRZYSZTOF JANKOWSKI
-''	HAPPY COWS V04
+''	HAPPY COWS V05
 ''
 ''	(c) 2016 P1X
 ''
 
-screenres 900, 600, 8, 4
+screenres 640, 480, 8, 4
 
 '' CGArne COLOR PALETTE
 palette 0, 0,0,0
@@ -37,6 +37,8 @@ dim palette_forest(3) as integer  => {0, 5, 4}
 dim palette_cow(6) as integer  => {15, 15, 15, 15, 7, 7}
 dim palette_player(4) as integer  => {12, 13, 14, 11}
 
+dim as integer max_players = 0
+dim as integer max_forest = 1 + rnd*2
 dim as integer max_cows = 32
 dim as integer cow(max_cows, 3)
 
@@ -50,28 +52,28 @@ dim as string key
 dim as integer i, x, y, t, no = 0, frames = 0, p, c
 dim as integer new_pos_x, new_pos_y, length
 dim as integer lake_x, lake_y, lake_size
-dim as integer max_forest = 1 + rnd*3
 dim as integer starting_forest(4, 2),starting_forest_id
 dim as integer grass_max, grass_hp
 dim as integer cows_movement, cows_hunger, cows_alert_length
 dim as integer player(4, 3)
-dim as integer max_players = 0
+
+
 do
 grass_max = 0
 grass_hp = 0
 cows_hunger = 5
 cows_movement = 35
 cows_alert_length = 12
-lake_size = 28
-lake_x = max_x / 2
-lake_y = max_y / 2
+lake_size = 4 + rnd*12
+lake_x = max_x / 2 + rnd*24
+lake_y = max_y / 2 + rnd*24
 max_forest = 1 + rnd*3
 starting_forest_id = 0
 
 '' GENERATE COWS
 for i = 0 to max_cows
-	cow(i, 0) = 12 + rnd*8
-	cow(i, 1) = 12 + rnd*8
+	cow(i, 0) = max_cows/2 + rnd*max_cows
+	cow(i, 1) = max_cows/2 + rnd*max_cows
 	cow(i, 2) = rnd*5
 next
 
@@ -81,7 +83,7 @@ for i = 0 to max_players
 	y = rnd*max_y
 	player(i, 0) = x
 	player(i, 1) = y
-	player(i, 2) = ascii_player(rnd*2)
+	player(i, 2) = ascii_player(rnd*1)
 next
 
 '' GENERATE FOREST
@@ -122,8 +124,8 @@ for x = 0 to max_x
 
 	'' LAKES
 	if rnd*100 < 5 then
-		lake_x = lake_x + (1 - rnd*2)
-		lake_y = lake_y + (1 - rnd*2)
+		lake_x = lake_x + (2 - rnd*4)
+		lake_y = lake_y + (2 - rnd*4)
 	end if
 	length = sqr((lake_x-x)^2 + (lake_y-y)^2)
 	if  ( length < lake_size - 1 ) or ( length < lake_size and rnd*10 < 3 ) then
@@ -194,7 +196,7 @@ for x = 0 to max_x
 		color palette_grass(0), palette_grass(1)
 		
 		'' GRASS GROWING
-		if terrain(x, y) > 0 and terrain(x,y) < 4 and rnd*2000<1 then
+		if terrain(x,y) < 4 and rnd*2000  < 1 then
 			terrain(x, y) = terrain(x, y) + 1
 		end if
 
@@ -228,7 +230,7 @@ next
 for c = 0 to max_cows
 for p = 0 to max_players
 	length = sqr((player(p,0)-cow(c, 0))^2 + (player(p, 1)-cow(c, 1))^2)
-	if length < cows_alert_length or rnd*100 < 10 then
+	if (length < cows_alert_length + rnd*6 and rnd*10 > 5 ) or rnd*100 < 10 then
 		if rnd*100 < cows_movement then
 			if length > cows_alert_length then
 				new_pos_x = cow(c, 0) - 1 + rnd*2
@@ -283,7 +285,7 @@ locate 2, 32
 	print "/";
 	print grass_max
 locate 2, max_x - 14
-	print "HAPPY COWS V04"
+	print "HAPPY COWS V05"
 
 '' CLOCKS
 frames = frames + 1
