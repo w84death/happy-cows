@@ -1,6 +1,6 @@
 ''
 ''	KRZYSZTOF JANKOWSKI
-''	HAPPY COWS V03
+''	HAPPY COWS V04
 ''
 ''	(c) 2016 P1X
 ''
@@ -30,10 +30,12 @@ randomize ,1
 dim ascii_terrain(5) as integer => {0, 176, 177, 178, 219}
 dim ascii_forest(5) as integer => {23, 30, 5, 6, 237}
 dim ascii_water(4) as integer => {0, 0, 176, 177}
+dim ascii_player(2) as integer => {1, 2}
 
 dim palette_grass(4) as integer  => {10,2}
 dim palette_forest(3) as integer  => {0, 5, 4}
 dim palette_cow(6) as integer  => {15, 15, 15, 15, 7, 7}
+dim palette_player(4) as integer  => {12, 13, 14, 11}
 
 dim as integer max_cows = 32
 dim as integer cow(max_cows, 3)
@@ -45,19 +47,21 @@ dim as integer no_go(max_x, max_y, 4)
 
 dim as boolean game_over = 0
 dim as string key
-dim as integer i, x, y, t, no = 0, frames = 0
+dim as integer i, x, y, t, no = 0, frames = 0, p, c
 dim as integer new_pos_x, new_pos_y, length
 dim as integer lake_x, lake_y, lake_size
 dim as integer max_forest = 1 + rnd*3
 dim as integer starting_forest(4, 2),starting_forest_id
 dim as integer grass_max, grass_hp
-dim as integer cows_movement, cows_hunger
-
+dim as integer cows_movement, cows_hunger, cows_alert_length
+dim as integer player(4, 3)
+dim as integer max_players = 0
 do
 grass_max = 0
 grass_hp = 0
 cows_hunger = 5
-cows_movement = 25
+cows_movement = 35
+cows_alert_length = 12
 lake_size = 28
 lake_x = max_x / 2
 lake_y = max_y / 2
@@ -69,6 +73,15 @@ for i = 0 to max_cows
 	cow(i, 0) = 12 + rnd*8
 	cow(i, 1) = 12 + rnd*8
 	cow(i, 2) = rnd*5
+next
+
+'' SPAWN PLAYER(S)
+for i = 0 to max_players
+	x = rnd*max_x
+	y = rnd*max_y
+	player(i, 0) = x
+	player(i, 1) = y
+	player(i, 2) = ascii_player(rnd*2)
 next
 
 '' GENERATE FOREST
@@ -83,7 +96,6 @@ for i = 0 to max_forest
 	starting_forest(starting_forest_id, 1) = y
 	starting_forest_id = starting_forest_id + 1
 next
-
 
 
 '' GENERATE TERRAIN
@@ -128,12 +140,40 @@ for x = 0 to max_x
 next
 next
 
+
 '' START SIMULATION
 color 0, 15
 cls
 
 do
 key = Inkey()
+
+'' PLAYER(S) MOVEMENT EVENTS
+new_pos_x = player(0, 0)
+new_pos_y = player(0, 1)
+'' UP
+if key = chr(255, 72) then
+	new_pos_y = player(0, 1) - 1
+end if
+'' DOWN
+if key = chr(255, 80) then
+	new_pos_y = player(0, 1) + 1
+end if
+'' LEFT
+if key = chr(255, 75) then
+	new_pos_x = player(0, 0) - 1
+end if
+'' RIGHT
+if key = chr(255, 77) then
+	new_pos_x = player(0, 0) + 1
+end if
+
+if new_pos_y > 0 and new_pos_y <= max_y and new_pos_x > 0 and new_pos_x <= max_x then
+	player(0, 0) = new_pos_x
+	player(0, 1) = new_pos_y
+end if
+
+
 
 ScreenLock()
 grass_hp = 0
@@ -176,27 +216,57 @@ for i = 0 to max_cows
 	print chr(64);
 next
 
+
+'' RENDER PLAYER(S)
+for i = 0 to max_players
+	locate player(i,1), player(i,0)
+	color palette_player(rnd*3), palette_grass(1)
+	print chr(player(i, 2));
+next
+
 '' AI
-for i = 0 to max_cows
-	if rnd*100 < cows_movement then
-		new_pos_x = cow(i, 0) - 1 + rnd*2
-		if new_pos_x < max_x and new_pos_x > 0 and no_go(new_pos_x, cow(i, 1), 0) < 0 then
-			cow(i, 0) = new_pos_x
+for c = 0 to max_cows
+for p = 0 to max_players
+	length = sqr((player(p,0)-cow(c, 0))^2 + (player(p, 1)-cow(c, 1))^2)
+	if length < cows_alert_length or rnd*100 < 10 then
+		if rnd*100 < cows_movement then
+			if length > cows_alert_length then
+				new_pos_x = cow(c, 0) - 1 + rnd*2
+			else
+				if cow(c, 0) - player(p, 0) >= 0 then
+					new_pos_x = cow(c, 0) + 1
+				else
+					new_pos_x = cow(c, 0) - 1
+				end if
+			end if
+			if new_pos_x <= max_x and new_pos_x > 0 and no_go(new_pos_x, cow(c, 1), 0) < 0 then
+				cow(c, 0) = new_pos_x
+			end if
 		end if
-	end if
-	if rnd*100 < cows_movement then
-		new_pos_y = cow(i, 1) - 1 + rnd*2
-		if new_pos_y < max_y and new_pos_y > 0 and no_go(cow(i, 0), new_pos_y, 0) < 0  then
-			cow(i, 1) = new_pos_y
+		if rnd*100 < cows_movement or rnd*100 < 10 then
+			if length > cows_alert_length then
+				new_pos_y = cow(c, 1) - 1 + rnd*2
+			else
+				if cow(c, 1) - player(p, 1) >= 0 then
+					new_pos_y = cow(c, 1) + 1
+				else
+					new_pos_y = cow(c, 1) - 1
+				end if
+			end if
+			if new_pos_y <= max_y and new_pos_y > 0 and no_go(cow(c, 0), new_pos_y, 0) < 0 then
+				cow(c, 1) = new_pos_y
+			end if
 		end if
 	end if
 
 	if rnd*100 < cows_hunger then
-		t = terrain(cow(i, 0), cow(i, 1))
+		t = terrain(cow(c, 0), cow(c, 1))
 		if t > 0 then
-			terrain(cow(i, 0), cow(i, 1)) = t - 1
+			terrain(cow(c, 0), cow(c, 1)) = t - 1
 		end if
 	end if
+
+next
 next
 
 '' HUD
@@ -213,7 +283,7 @@ locate 2, 32
 	print "/";
 	print grass_max
 locate 2, max_x - 14
-	print "HAPPY COWS V03"
+	print "HAPPY COWS V04"
 
 '' CLOCKS
 frames = frames + 1
