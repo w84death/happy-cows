@@ -1,6 +1,6 @@
 ''
 ''	KRZYSZTOF JANKOWSKI
-''	HAPPY COWS V05
+''	HAPPY COWS V06
 ''
 ''	(c) 2016 P1X
 ''
@@ -55,14 +55,14 @@ dim as integer lake_x, lake_y, lake_size
 dim as integer starting_forest(4, 2),starting_forest_id
 dim as integer grass_max, grass_hp
 dim as integer cows_movement, cows_hunger, cows_alert_length
-dim as integer player(4, 3)
+dim as integer player(4, 4), player_taming = 1
 
 
 do
 grass_max = 0
 grass_hp = 0
 cows_hunger = 5
-cows_movement = 35
+cows_movement = 15
 cows_alert_length = 12
 lake_size = 4 + rnd*12
 lake_x = max_x / 2 + rnd*24
@@ -84,6 +84,7 @@ for i = 0 to max_players
 	player(i, 0) = x
 	player(i, 1) = y
 	player(i, 2) = ascii_player(rnd*1)
+	player(i, 3) = 0
 next
 
 '' GENERATE FOREST
@@ -170,6 +171,11 @@ if key = chr(255, 77) then
 	new_pos_x = player(0, 0) + 1
 end if
 
+'' TAMING (ENTER)
+if key = chr(9) then
+	player_taming = player_taming * -1
+end if
+
 if new_pos_y > 0 and new_pos_y <= max_y and new_pos_x > 0 and new_pos_x <= max_x then
 	player(0, 0) = new_pos_x
 	player(0, 1) = new_pos_y
@@ -222,7 +228,13 @@ next
 '' RENDER PLAYER(S)
 for i = 0 to max_players
 	locate player(i,1), player(i,0)
-	color palette_player(rnd*3), palette_grass(1)
+	if frames mod 10 = 0 then
+		player(i, 3) = player(i, 3) + 1
+		if player(i, 3) > 3 then
+			player(i, 3) = 0
+		end if
+	end if
+	color palette_player(player(i, 3)), palette_grass(1)
 	print chr(player(i, 2));
 next
 
@@ -236,9 +248,9 @@ for p = 0 to max_players
 				new_pos_x = cow(c, 0) - 1 + rnd*2
 			else
 				if cow(c, 0) - player(p, 0) >= 0 then
-					new_pos_x = cow(c, 0) + 1
+					new_pos_x = cow(c, 0) + player_taming
 				else
-					new_pos_x = cow(c, 0) - 1
+					new_pos_x = cow(c, 0) - player_taming
 				end if
 			end if
 			if new_pos_x <= max_x and new_pos_x > 0 and no_go(new_pos_x, cow(c, 1), 0) < 0 then
@@ -250,9 +262,9 @@ for p = 0 to max_players
 				new_pos_y = cow(c, 1) - 1 + rnd*2
 			else
 				if cow(c, 1) - player(p, 1) >= 0 then
-					new_pos_y = cow(c, 1) + 1
+					new_pos_y = cow(c, 1) + player_taming
 				else
-					new_pos_y = cow(c, 1) - 1
+					new_pos_y = cow(c, 1) - player_taming
 				end if
 			end if
 			if new_pos_y <= max_y and new_pos_y > 0 and no_go(cow(c, 0), new_pos_y, 0) < 0 then
@@ -285,7 +297,7 @@ locate 2, 32
 	print "/";
 	print grass_max
 locate 2, max_x - 14
-	print "HAPPY COWS V05"
+	print "HAPPY COWS V06"
 
 '' CLOCKS
 frames = frames + 1
