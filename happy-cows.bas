@@ -1,6 +1,6 @@
 ''
 ''	KRZYSZTOF JANKOWSKI
-''	HAPPY COWS V06
+''	HAPPY COWS V07
 ''
 ''	(c) 2016 P1X
 ''
@@ -56,6 +56,7 @@ dim as integer starting_forest(4, 2),starting_forest_id
 dim as integer grass_max, grass_hp
 dim as integer cows_movement, cows_hunger, cows_alert_length
 dim as integer player(4, 4), player_taming = 1
+dim page as integer = 0
 
 
 do
@@ -69,7 +70,7 @@ lake_x = max_x / 2 + rnd*24
 lake_y = max_y / 2 + rnd*24
 max_forest = 1 + rnd*3
 starting_forest_id = 0
-
+  
 '' GENERATE COWS
 for i = 0 to max_cows
 	cow(i, 0) = max_cows/2 + rnd*max_cows
@@ -183,7 +184,12 @@ end if
 
 
 
-ScreenLock()
+''ScreenLock()
+
+
+screenset page, page xor 1
+
+
 grass_hp = 0
 
 '' RENDER TERRAIN (ANIMATE WATER)
@@ -297,7 +303,7 @@ locate 2, 32
 	print "/";
 	print grass_max
 locate 2, max_x - 14
-	print "HAPPY COWS V06"
+	print "HAPPY COWS V07"
 
 '' CLOCKS
 frames = frames + 1
@@ -305,9 +311,12 @@ if frames > 24*60 then
 	frames = 0
 	no = no + 1
 end if
-ScreenUnlock()
 
-sleep(18, 1)
+''ScreenUnlock()
+page xor= 1
+screenset page, page xor 1
+
+sleep(3, 1)
 
 '' DELETE
 loop until key = chr(255, 83) or key = chr(27)
